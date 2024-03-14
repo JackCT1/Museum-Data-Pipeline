@@ -81,4 +81,5 @@ venv/
 .pytest_cache
 
 .terraform
+terraform.tfvars
 .env
