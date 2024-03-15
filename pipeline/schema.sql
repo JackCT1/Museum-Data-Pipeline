@@ -10,12 +10,14 @@ DROP TABLE IF EXISTS support_values CASCADE;
 
 CREATE TABLE departments (
     id INT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(255) UNIQUE NOT NULL
+    name VARCHAR(255) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE floors (
     id INT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(50) UNIQUE NOT NULL
+    name VARCHAR(50) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE exhibitions (
@@ -26,6 +28,7 @@ CREATE TABLE exhibitions (
     description TEXT NOT NULL,
     department_id INT NOT NULL,
     floor_id INT NOT NULL,
+    PRIMARY KEY (id),
     FOREIGN KEY (department_id)
             REFERENCES departments(id)
             ON DELETE CASCADE,
@@ -39,7 +42,7 @@ CREATE TABLE rating_events (
     exhibit_id INT,
     rating_value_id INT,
     rated_at TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (rating_id),
+    PRIMARY KEY (id),
     FOREIGN KEY (exhibit_id)
             REFERENCES exhibitions(id)
             ON DELETE CASCADE,
@@ -51,7 +54,8 @@ CREATE TABLE rating_events (
 CREATE TABLE rating_values (
     id INT GENERATED ALWAYS AS IDENTITY,
     value SMALLINT UNIQUE NOT NULL,
-    description TEXT UNIQUE NOT NULL
+    description TEXT UNIQUE NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE support_events (
@@ -59,7 +63,7 @@ CREATE TABLE support_events (
     exhibit_id INT,
     support_value_id INT,
     made_at TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (support_event_id),
+    PRIMARY KEY (id),
     FOREIGN KEY (exhibit_id)
             REFERENCES exhibitions(id)
             ON DELETE CASCADE,
