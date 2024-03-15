@@ -34,7 +34,19 @@ CREATE TABLE exhibitions (
             ON DELETE CASCADE
 );
 
-CREATE TABLE rating_events ();
+CREATE TABLE rating_events (
+    id INT GENERATED ALWAYS AS IDENTITY,
+    exhibit_id INT,
+    rating_value_id INT,
+    rated_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (rating_id),
+    FOREIGN KEY (exhibit_id)
+            REFERENCES exhibitions(id)
+            ON DELETE CASCADE,
+    FOREIGN KEY (rating_value_id)
+            REFERENCES rating_values(id)
+            ON DELETE CASCADE
+);
 
 CREATE TABLE rating_values (
     id INT PRIMARY KEY,
@@ -42,6 +54,24 @@ CREATE TABLE rating_values (
     description TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE support_events ();
+CREATE TABLE support_events (
+    id INT GENERATED ALWAYS AS IDENTITY,
+    exhibit_id INT,
+    support_value_id INT,
+    made_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (support_event_id),
+    FOREIGN KEY (exhibit_id)
+            REFERENCES exhibitions(id)
+            ON DELETE CASCADE,
+    FOREIGN KEY (support_value_id)
+            REFERENCES support_values(id)
+            ON DELETE CASCADE
+);
 
-CREATE TABLE support_values ();
+CREATE TABLE support_values (
+    id INT GENERATED ALWAYS AS IDENTITY,
+    value SMALLINT NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (support_value, support_description)
+);
