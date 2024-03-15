@@ -37,6 +37,13 @@ CREATE TABLE exhibitions (
             ON DELETE CASCADE
 );
 
+CREATE TABLE rating_values (
+    id INT GENERATED ALWAYS AS IDENTITY,
+    value SMALLINT UNIQUE NOT NULL,
+    description TEXT UNIQUE NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE rating_events (
     id INT GENERATED ALWAYS AS IDENTITY,
     exhibit_id INT,
@@ -51,10 +58,10 @@ CREATE TABLE rating_events (
             ON DELETE CASCADE
 );
 
-CREATE TABLE rating_values (
+CREATE TABLE support_values (
     id INT GENERATED ALWAYS AS IDENTITY,
     value SMALLINT UNIQUE NOT NULL,
-    description TEXT UNIQUE NOT NULL,
+    description VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -72,15 +79,7 @@ CREATE TABLE support_events (
             ON DELETE CASCADE
 );
 
-CREATE TABLE support_values (
-    id INT GENERATED ALWAYS AS IDENTITY,
-    value SMALLINT NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (support_value, support_description)
-);
-
-INSERT INTO departments(department_name)
+INSERT INTO departments(name)
 VALUES
 ('Entomology'),
 ('Geology'),
@@ -88,14 +87,14 @@ VALUES
 ('Zoology'),
 ('Ecology');
 
-INSERT INTO floors(floor_name)
+INSERT INTO floors(name)
 VALUES
 ('Vault'),
 ('1'),
 ('2'),
 ('3');
 
-INSERT INTO exhibitions (exhibit_code, exhibit_name, date_started, exhibit_description, department_id, floor_id)
+INSERT INTO exhibitions (code, name, start_date, description, department_id, floor_id)
 VALUES
 ('EXH_00', 'Measureless to Man','2021-08-23', 'An immersive 3D experience: delve deep into a previously-inaccessible cave system.', 2, 2),
 ('EXH_01', 'Adaption', '2019-07-01', 'How insect evolution has kept pace with an industrialised world', 1, 1),
