@@ -26,5 +26,14 @@ connection = engine.connect()
 session = sessionmaker(bind=engine)
 s3 = client('s3', aws_access_key_id = ACCESS_KEY_ID, aws_secret_access_key = SECRET_ACCESS_KEY)
 
+def download_relevant_files_from_s3() -> pd.DataFrame:
+    contents = s3.list_objects(Bucket=BUCKET_NAME)["Contents"]
+    file_names = [list_object["Key"] for list_object in contents]
+    for file in file_names:
+        s3.download_file(BUCKET_NAME, file, f"downloads/{file}")
+    logging.info("All files successfully downloaded from S3")
+    events_df = pd.read_csv('downloads/lmnh_hist_data_all.csv')
+    return True
+
 if __name__ == "__main__":
     ''
