@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import pandas as pd
 from boto3 import client
 import botocore.exceptions
-import botocore.exceptions
 import psycopg2
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -27,6 +26,9 @@ session = sessionmaker(bind=engine)
 s3 = client('s3', aws_access_key_id = ACCESS_KEY_ID, aws_secret_access_key = SECRET_ACCESS_KEY)
 
 def download_relevant_files_from_s3() -> bool:
+    """
+    Accesses relevant s3 bucket, downloads contents and puts into 'downloads' directory
+    """
     contents = s3.list_objects(Bucket=BUCKET_NAME)["Contents"]
     file_names = [list_object["Key"] for list_object in contents]
     for file in file_names:
@@ -35,6 +37,9 @@ def download_relevant_files_from_s3() -> bool:
     return True
 
 def load_files_into_pandas_dataframes() -> pd.DataFrame:
+    """
+    Loads historic data file and filters the two different types of events into pandas dataframes
+    """
     events_df = pd.read_csv('downloads/lmnh_hist_data_all.csv')
     ratings_df = events_df[events_df['val'] != -1]
     support_df = events_df[events_df['val'] == -1]
@@ -44,12 +49,18 @@ def load_files_into_pandas_dataframes() -> pd.DataFrame:
     return ratings_df, support_df
 
 def format_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Correctly formats dataframes to be written into postgres
+    """
     dataframe[dataframe.columns[0]] += 1
     dataframe[dataframe.columns[1]] += 1
     dataframe[dataframe.columns[2]].to_timestamp
     return dataframe
 
 def write_dataframe_to_postgresql(dataframe: pd.DataFrame, table_name: str) -> bool:
+    """
+    Takes a dataframe and writes to its corresponding postgres table
+    """
     for row in range(0, len(dataframe)):
         query = f'INSERT INTO {table_name} VALUES (:id, :site, :val, :at)'
         parameters = {"id":row, 
