@@ -45,11 +45,10 @@ CREATE TABLE rating_values (
 );
 
 CREATE TABLE rating_events (
-    id INT GENERATED ALWAYS AS IDENTITY,
+    id INT PRIMARY KEY,
     exhibit_id INT,
     rating_value_id INT,
     rated_at TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (id),
     FOREIGN KEY (exhibit_id)
             REFERENCES exhibitions(id)
             ON DELETE CASCADE,
@@ -102,3 +101,11 @@ VALUES
 ('EXH_03', 'Cetacean Sensations', '2019-07-01', 'Whales: from ancient myth to critically endangered.', 4, 2),
 ('EXH_04', 'Our Polluted World', '2021-05-12', 'A hard-hitting exploration of humanity`s impact on the environment.', 5, 4),
 ('EXH_05', 'Thunder Lizards', '2023-02-01', 'How new research is making scientists rethink what dinosaurs really looked like.', 3, 1);
+
+INSERT INTO rating_values (value, description)
+VALUES
+(0, 'Terrible'),
+(1, 'Bad'),
+(2, 'Neutral'),
+(3, 'Good'),
+(4, 'Amazing');
