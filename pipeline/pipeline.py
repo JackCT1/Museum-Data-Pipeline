@@ -67,4 +67,11 @@ def write_dataframe_to_postgresql(dataframe: pd.DataFrame, table_name: str) -> b
             logging.error(f"Error raised whilst inserting data into {table_name}: {e}")
 
 if __name__ == "__main__":
-    ''
+    download_relevant_files_from_s3()
+    load_files_into_pandas_dataframes()
+    
+    ratings_df = format_dataframe(load_files_into_pandas_dataframes()[0])
+    support_df = format_dataframe(load_files_into_pandas_dataframes()[1])
+    
+    write_dataframe_to_postgresql(ratings_df, 'rating_events')
+    write_dataframe_to_postgresql(support_df, 'support_df')
