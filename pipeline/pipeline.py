@@ -38,8 +38,16 @@ def load_files_into_pandas_dataframes() -> pd.DataFrame:
     events_df = pd.read_csv('downloads/lmnh_hist_data_all.csv')
     ratings_df = events_df[events_df['val'] != -1]
     support_df = events_df[events_df['val'] == -1]
+    ratings_df = ratings_df[['site', 'val', 'at']]
+    support_df = support_df[['site', 'type', 'at']]
     logging.info("Files successfully loaded into Pandas Dataframes")
     return ratings_df, support_df
+
+def format_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
+    dataframe[dataframe.columns[0]] += 1
+    dataframe[dataframe.columns[1]] += 1
+    dataframe[dataframe.columns[2]].to_timestamp
+    return dataframe
 
 if __name__ == "__main__":
     ''
