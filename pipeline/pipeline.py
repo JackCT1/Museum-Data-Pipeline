@@ -49,5 +49,22 @@ def format_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe[dataframe.columns[2]].to_timestamp
     return dataframe
 
+def write_dataframe_to_postgresql(dataframe: pd.DataFrame, table_name: str) -> bool:
+    for row in range(0, len(dataframe)):
+        query = f'INSERT INTO {table_name} VALUES (:id, :site, :val, :at)'
+        parameters = {"id":row, 
+                    "site": dataframe[dataframe.columns[0]].tolist()[row], 
+                    "val": dataframe[dataframe.columns[1]].tolist()[row], 
+                    "at": dataframe[dataframe.columns[2]].tolist()[row]}
+        stmt = text(query)
+
+        try:
+            with engine.connect() as con:
+                con.execute(stmt, parameters=parameters)
+                con.commit()
+                logging.info('Data inserted')
+        except Exception as e:
+            logging.error(f"Error raised whilst inserting data into {table_name}: {e}")
+
 if __name__ == "__main__":
     ''
