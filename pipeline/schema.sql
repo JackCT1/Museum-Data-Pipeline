@@ -65,11 +65,10 @@ CREATE TABLE support_values (
 );
 
 CREATE TABLE support_events (
-    id INT GENERATED ALWAYS AS IDENTITY,
+    id INT PRIMARY KEY,
     exhibit_id INT,
     support_value_id INT,
     made_at TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (id),
     FOREIGN KEY (exhibit_id)
             REFERENCES exhibitions(id)
             ON DELETE CASCADE,
