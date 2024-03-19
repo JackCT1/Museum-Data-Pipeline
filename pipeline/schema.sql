@@ -110,7 +110,7 @@ VALUES
 (3, 'Good'),
 (4, 'Amazing');
 
-INSERT INTO support_types (value, description)
+INSERT INTO support_values (value, description)
 VALUES
 (0, 'Assistance'),
 (1, 'Emergency');
