@@ -85,4 +85,4 @@ if __name__ == "__main__":
     support_df = format_dataframe(load_files_into_pandas_dataframes()[1])
     
     write_dataframe_to_postgresql(ratings_df, 'rating_events')
-    write_dataframe_to_postgresql(support_df, 'support_df')
+    write_dataframe_to_postgresql(support_df, 'support_events')
