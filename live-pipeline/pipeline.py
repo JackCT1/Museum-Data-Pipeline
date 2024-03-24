@@ -51,3 +51,33 @@ def start_consumer() -> Consumer:
         'enable.auto.commit': 'false',
     })
 
+def insert_message_row(conn: connection, message: dict) -> bool:
+    """
+    Uploads message to relevant table in database
+    Returns True if message successfully uploaded, False otherwise
+    """
+
+    at = message.get("at")
+    site = message.get("site")
+    val = message.get("val")
+    type = message.get("type")
+
+    if type is not None:
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                        INSERT INTO support_events (exhibit_id, support_type_id, at)
+                        VALUES ({site}, {type}, '{at}');
+                        """)
+            conn.commit()
+            return True
+
+    elif type is None:
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                        INSERT INTO rating_events (exhibit_id, rating_value_id, at)
+                        VALUES ({site}, {val}, '{at}');
+                        """)
+            conn.commit()
+            return True
+
+    return False
