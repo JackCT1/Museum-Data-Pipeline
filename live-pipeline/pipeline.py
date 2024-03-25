@@ -51,7 +51,29 @@ def start_consumer() -> Consumer:
         'enable.auto.commit': 'false',
     })
 
-def insert_message_row(conn: connection, message: dict) -> bool:
+def format_event_row(message: dict) -> dict:
+    """
+    Formats Kafka message for database insertion
+    """
+    
+    at = datetime.fromisoformat(message.get("at"))
+    at = datetime(at.year, at.month, at.day, at.hour, at.minute, at.second)
+
+    site = message.get("site")
+    val = message.get("val")
+    type = message.get("type")
+
+    site += 1
+
+    if val != -1:
+        val += 1
+
+    if type is not None:
+        type += 1
+    
+    return message
+
+def insert_event_row(conn: connection, message: dict) -> bool:
     """
     Uploads message to relevant table in database
     Returns True if message successfully uploaded, False otherwise
@@ -81,3 +103,7 @@ def insert_message_row(conn: connection, message: dict) -> bool:
             return True
 
     return False
+
+if __name__ == '__main__':
+
+    log = get_logger(logging.INFO)
