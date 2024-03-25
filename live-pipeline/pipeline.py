@@ -1,3 +1,4 @@
+from ast import literal_eval
 from datetime import datetime
 import logging
 import os
@@ -105,16 +106,33 @@ def insert_event_row(conn: connection, message: dict) -> bool:
 
     return False
 
-def upload_event_to_database():
-    try:
-        c = start_consumer()
-        c.subscribe([KAFKA_TOPIC])
-    except KafkaException as e:
-        logging.error(f"Error raised whilst accessing Kafka stream: {e}")
-    finally:
-        c.close()
-    return True
+def upload_event_to_database(consumer: str, topic: str, conn: connection) -> None:
+
+    c = start_consumer()
+    c.subscribe([KAFKA_TOPIC])
+    message = consumer.poll(1)
+    while True:
+        if message:
+            try:
+                message_dictionary = literal_eval(message.value().decode())
+                message = format_event_row(message_dictionary)
+                insert_event_row(conn, message)
+                logging.info("Message successfully uploaded to database")
+            except KafkaException as e:
+                logging.error(f"Error raised whilst accessing Kafka stream: {e}")
+            finally:
+                c.close()
 
 if __name__ == '__main__':
 
     log = get_logger(logging.INFO)
+
+    consumer = start_consumer()
+
+    tp = TopicPartition(KAFKA_TOPIC, 0)
+    tp.offset = OFFSET_END
+    consumer.assign([tp])
+
+    engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+    db_connection = engine.connect()
+    upload_event_to_database(consumer, KAFKA_TOPIC, db_connection)
