@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from psycopg2 import connect
 from psycopg2.extensions import connection
 
+
 logging.getLogger().setLevel(logging.INFO)
 
 load_dotenv()
@@ -133,6 +134,10 @@ if __name__ == '__main__':
     tp.offset = OFFSET_END
     consumer.assign([tp])
 
-    engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
-    db_connection = engine.connect()
+    db_connection = connect(dbname=DB_NAME,
+                   host=DB_HOST,
+                   port=DB_PORT,
+                   user=DB_USER,
+                   password=DB_PASSWORD)
+    
     upload_event_to_database(consumer, KAFKA_TOPIC, db_connection)
