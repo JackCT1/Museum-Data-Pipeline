@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 import os
 
-from confluent_kafka import Consumer, TopicPartition, OFFSET_END
+from confluent_kafka import Consumer, TopicPartition, OFFSET_END, KafkaException
 from dotenv import load_dotenv
 from psycopg2 import connect
 from psycopg2.extensions import connection
@@ -19,6 +19,7 @@ DB_NAME = os.getenv('DB_NAME')
 KAFKA_SERVER = os.getenv('KAFKA_SERVER')
 KAFKA_USERNAME = os.getenv('KAFKA_USERNAME')
 KAFKA_PASSWORD = os.getenv('KAFKA_PASSWORD')
+KAFKA_TOPIC = os.getenv('KAFKA_TOPIC')
 GROUP = os.getenv('GROUP')
 
 def get_logger(log_level: str) -> logging.Logger:
@@ -103,6 +104,16 @@ def insert_event_row(conn: connection, message: dict) -> bool:
             return True
 
     return False
+
+def upload_event_to_database():
+    try:
+        c = start_consumer()
+        c.subscribe([KAFKA_TOPIC])
+    except KafkaException as e:
+        logging.error(f"Error raised whilst accessing Kafka stream: {e}")
+    finally:
+        c.close()
+    return True
 
 if __name__ == '__main__':
 
