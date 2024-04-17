@@ -63,7 +63,7 @@ def write_dataframe_to_postgresql(dataframe: pd.DataFrame, table_name: str) -> b
     """
     for row in range(0, len(dataframe)):
         query = f'INSERT INTO {table_name} VALUES (:id, :site, :val, :at)'
-        parameters = {"id":row, 
+        parameters = {"id":row + 1, 
                     "site": dataframe[dataframe.columns[0]].tolist()[row], 
                     "val": dataframe[dataframe.columns[1]].tolist()[row], 
                     "at": dataframe[dataframe.columns[2]].tolist()[row]}
