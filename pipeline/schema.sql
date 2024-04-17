@@ -1,5 +1,3 @@
-DROP DATABASE If EXISTS museum;
-
 DROP TABLE IF EXISTS exhibitions CASCADE;
 DROP TABLE IF EXISTS floors CASCADE;
 DROP TABLE IF EXISTS departments CASCADE;
@@ -30,11 +28,9 @@ CREATE TABLE exhibitions (
     floor_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (department_id)
-            REFERENCES departments(id)
-            ON DELETE CASCADE,
+            REFERENCES departments(id),
     FOREIGN KEY (floor_id)
             REFERENCES floors(id)
-            ON DELETE CASCADE
 );
 
 CREATE TABLE rating_values (
@@ -50,11 +46,9 @@ CREATE TABLE rating_events (
     rating_value_id INT,
     rated_at TIMESTAMPTZ NOT NULL,
     FOREIGN KEY (exhibit_id)
-            REFERENCES exhibitions(id)
-            ON DELETE CASCADE,
+            REFERENCES exhibitions(id),
     FOREIGN KEY (rating_value_id)
             REFERENCES rating_values(id)
-            ON DELETE CASCADE
 );
 
 CREATE TABLE support_values (
@@ -70,11 +64,9 @@ CREATE TABLE support_events (
     support_value_id INT,
     made_at TIMESTAMPTZ NOT NULL,
     FOREIGN KEY (exhibit_id)
-            REFERENCES exhibitions(id)
-            ON DELETE CASCADE,
+            REFERENCES exhibitions(id),
     FOREIGN KEY (support_value_id)
             REFERENCES support_values(id)
-            ON DELETE CASCADE
 );
 
 INSERT INTO departments(name)
